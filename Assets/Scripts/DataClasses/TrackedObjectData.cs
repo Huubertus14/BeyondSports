@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Build.Player;
 using UnityEngine;
 
 [Serializable]
-public class TrackedObject
+public class TrackedObjectData
 {
     [SerializeField] private string teamName;
     [SerializeField] private string trackingID;
@@ -12,7 +13,7 @@ public class TrackedObject
     [SerializeField] private Vector2 position;
     [SerializeField] private float speed;
 
-    public TrackedObject(string team, string trackingID, int playerNumber, Vector2 position, float speed)
+    public TrackedObjectData(string team, string trackingID, int playerNumber, Vector2 position, float speed)
     {
         this.teamName = team;
         this.trackingID = trackingID;
@@ -21,10 +22,10 @@ public class TrackedObject
         this.speed = speed;
     }
 
-    public TrackedObject(string objectData)
+    public TrackedObjectData(string objectData)
     {
         string[] splitData = objectData.Split(',');
-        
+
         teamName = splitData[0];
         trackingID = splitData[1];
         playerNumber = int.Parse(splitData[2]);
@@ -32,4 +33,10 @@ public class TrackedObject
         position.y = float.Parse(splitData[4]);
         speed = float.Parse(splitData[5]);
     }
+
+    public string TeamName => teamName;
+    public string TrackingId => trackingID;
+    public int PlayerNumber => playerNumber;
+    public Vector2 Position => position;
+    public float Speed => speed;
 }

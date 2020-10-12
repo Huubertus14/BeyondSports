@@ -7,7 +7,7 @@ using UnityEngine;
 public class Frame
 {
     [SerializeField] private int frameCount;
-    [SerializeField] private TrackedObject[] trackedObjects;
+    [SerializeField] private TrackedObjectData[] trackedObjects;
     [SerializeField] private BallData ballData;
 
     public Frame(string stringData)
@@ -19,23 +19,26 @@ public class Frame
         string ballDataString = indexString[2];
 
         this.frameCount = int.Parse(indexString[0]);
-        trackedObjects = new TrackedObject[trackedObjectsString.Length];
+        trackedObjects = new TrackedObjectData[trackedObjectsString.Length];
         for (int i = 0; i < trackedObjects.Length; i++)
         {
             if (!string.IsNullOrEmpty(trackedObjectsString[i]))
             {
-                trackedObjects[i] = new TrackedObject(trackedObjectsString[i]);
+                trackedObjects[i] = new TrackedObjectData(trackedObjectsString[i]);
             }
         }
         ballData = new BallData(ballDataString);
     }
 
-    public Frame(int frameCount, TrackedObject[] trackedObjects, BallData ballData)
+    public Frame(int frameCount, TrackedObjectData[] trackedObjects, BallData ballData)
     {
         this.frameCount = frameCount;
         this.trackedObjects = trackedObjects;
         this.ballData = ballData;
     }
 
+    public int GetFrameCount => frameCount;
+    public BallData GetBallData => ballData;
+    public TrackedObjectData[] GetTrackedObjects => trackedObjects;
 
 }

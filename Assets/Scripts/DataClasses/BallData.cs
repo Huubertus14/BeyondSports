@@ -24,4 +24,7 @@ public class BallData
         ballPosition.y = float.Parse(splitData[1]);
         ballSpeed = float.Parse(splitData[2]);
     }
+
+    public Vector3 Position => ballPosition;
+    public float Speed => ballSpeed;
 }
