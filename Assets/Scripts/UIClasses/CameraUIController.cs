@@ -9,12 +9,9 @@ public class CameraUIController : MonoBehaviour
     [SerializeField] private CameraController cameraController;
     [SerializeField] private GameObject cameraSettingsPanel;
 
-    private bool focusToggle;
-
     private void Awake()
     {
         cameraSettingsPanel.SetActive(false);
-        focusToggle = false;
     }
 
     public void TogglePanel()
@@ -27,9 +24,9 @@ public class CameraUIController : MonoBehaviour
         cameraController.ResetTransform();
     }
 
-    public void ToggleFreeRoam(bool value)
+    public void ToggleFreeRoam()
     {
-        
+        cameraController.SetFreeRoam();
     }
 
     public void FocusOnBall()
@@ -37,9 +34,5 @@ public class CameraUIController : MonoBehaviour
         cameraController.SetLookTarget(MatchVisualizer.SP.GetBall.gameObject);
     }
 
-    private void ClickedPlayer(TrackedObjectBahviour clickedPlayer)
-    {
-        //Set camera focus
-        cameraController.SetLookTarget(clickedPlayer.gameObject);
-    }
+    
 }

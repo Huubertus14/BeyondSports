@@ -208,7 +208,7 @@ MonoBehaviour:
       - m_Target: {fileID: 1900521965}
         m_TargetAssemblyTypeName: CameraUIController, Assembly-CSharp
         m_MethodName: ToggleFreeRoam
-        m_Mode: 6
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -2695,6 +2695,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52f6df7099f85742a4b12f9203dbcd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  freeRoam: 0
 --- !u!1 &1900521963
 GameObject:
   m_ObjectHideFlags: 0

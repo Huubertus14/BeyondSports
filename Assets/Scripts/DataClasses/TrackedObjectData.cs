@@ -7,6 +7,8 @@ using UnityEngine;
 [Serializable]
 public class TrackedObjectData
 {
+    private object[] trackedObjectData;
+
     [SerializeField] private string teamName;
     [SerializeField] private string trackingID;
     [SerializeField] private int playerNumber;
@@ -28,20 +30,20 @@ public class TrackedObjectData
     {
         string[] splitData = objectData.Split(',');
 
+        trackedObjectData = new object[splitData.Length];
+
+        for (int i = 0; i < trackedObjectData.Length; i++)
+        {
+            trackedObjectData[i] = splitData[i];
+        }
+
         teamName = splitData[0];
         trackingID = splitData[1];
         playerNumber = int.Parse(splitData[2]);
         position.x = float.Parse(splitData[3]);
         position.y = float.Parse(splitData[4]);
         speed = float.Parse(splitData[5]);
-        try
-        {
-            firstDown = splitData[6];
-        }
-        catch (Exception)
-        {
-            throw;
-        }
+        
     }
 
     public string TeamName => teamName;

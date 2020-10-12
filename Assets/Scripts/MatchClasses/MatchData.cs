@@ -10,23 +10,18 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
 
     private List<Dictionary<int, Frame>> subDict;
 
-    private int amountOfSubDicts; //the amount of frames that are bufferd on each side
+    private int amountOfSubDicts;
+    private int firstFrame;
+    private int lastFrame;
 
-    [SerializeField] private int currentFrameIndex;
-    [SerializeField] private int firstFrame;
-    [SerializeField] private int lastFrame;
-
-    private Frame lastGivenFrame;
-    StreamReader streamReader;
+    private Frame lastGivenFrame; //work around to keer simulation going when there is a empty or wrong frame
 
     private void Start()
     {
         amountOfSubDicts = 10;
-        currentFrameIndex = 0;
+        GetIndex = 0;
         firstFrame = 0;
         lastFrame = int.MaxValue;
-
-        streamReader = new StreamReader(filePath);
 
         subDict = new List<Dictionary<int, Frame>>();
         for (int i = 0; i < amountOfSubDicts; i++)
@@ -39,6 +34,7 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
 
     private IEnumerator LoadAllFrames()
     {
+        StreamReader streamReader = new StreamReader(filePath);
         int lineIndex = 0;
         Frame tempFrame = null;
         while (!streamReader.EndOfStream)
@@ -53,7 +49,7 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
             {
                 lastGivenFrame = tempFrame;
                 firstFrame = tempFrame.GetFrameCount;
-                currentFrameIndex = firstFrame;
+                GetIndex = firstFrame;
                 MatchVisualizer.SP.CreateMatch(GetCurrentFrame());
             }
 
@@ -70,12 +66,10 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
             Debug.LogWarning("Last frame not found");
         }
 
-        GameManager.SP.GetSimulationController.CreateSlider(firstFrame,lastFrame, currentFrameIndex);
+        GameManager.SP.GetSimulationController.CreateSlider(firstFrame, lastFrame, GetIndex);
         streamReader.Close();
         yield return 0;
     }
-
-
 
     private Dictionary<int, Frame> GetDictionairy(int index)
     {
@@ -86,26 +80,26 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
 
     public Frame GetCurrentFrame(int direction = 0)
     {
-        currentFrameIndex = Mathf.Clamp(currentFrameIndex, firstFrame, lastFrame);
-        currentFrameIndex += direction;
-        GameManager.SP.GetSimulationController.UpdateSlider(currentFrameIndex);
-        if (GetDictionairy(currentFrameIndex).TryGetValue(currentFrameIndex, out Frame fr))
+        GetIndex = Mathf.Clamp(GetIndex, firstFrame, lastFrame);
+        GetIndex += direction;
+        GameManager.SP.GetSimulationController.UpdateSlider(GetIndex);
+        if (GetDictionairy(GetIndex).TryGetValue(GetIndex, out Frame fr))
         {
             lastGivenFrame = fr;
             return fr;
         }
         else
         {
-            Debug.Log("Frame does not exist " + currentFrameIndex + " start buffering");
+            Debug.Log("Frame does not exist " + GetIndex + " start buffering");
             return lastGivenFrame;
         }
 
     }
 
-    public int GetIndex => currentFrameIndex;
+    public int GetIndex { get; private set; }
 
     public void SetIndex(int newIndex)
     {
-        currentFrameIndex = newIndex;
+        GetIndex = newIndex;
     }
 }
