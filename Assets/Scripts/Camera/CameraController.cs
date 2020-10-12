@@ -7,14 +7,13 @@ public class CameraController : MonoBehaviour
     private GameObject target;
     private bool freeRoam;
     private Vector3 offSet;
-
     private Transform orginTransform;
  
     private void Awake()
     {
         freeRoam = false;
         target = null;
-        offSet = new Vector3(0,400,-400);
+        offSet = new Vector3(0,600,-800);
     }
 
     public void ResetTransform()

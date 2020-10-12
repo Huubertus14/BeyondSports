@@ -7,20 +7,13 @@ public class HighlightController : MonoBehaviour
     [Header("Inspector refs:")]
     [SerializeField] private PlayerInfoPanelController infoController;
 
-
-    private Camera camera;
     private RaycastHit hit;
-
-    void Start()
-    {
-        camera = Camera.main;
-    }
 
     private void Update()
     {
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out hit))
             {
                 IHighlightObject highlight = hit.transform.gameObject.GetComponent<IHighlightObject>();
@@ -29,6 +22,7 @@ public class HighlightController : MonoBehaviour
                     //Set panel info
                     infoController.TogglePanel(true);
                     infoController.SetData(highlight.Description());
+                    highlight.SetHighLight();
                 }
                 else
                 {

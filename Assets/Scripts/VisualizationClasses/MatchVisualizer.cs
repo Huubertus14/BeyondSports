@@ -4,9 +4,8 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
+public class MatchVisualizer : SingletonMonoBehaviour<MatchVisualizer>
 {
-
     [Header("Prefabs")]
     [SerializeField] private TrackedObjectBahviour trackedObjectPrefab;
     [SerializeField] private BallBehaviour ballPrefab;
@@ -15,12 +14,11 @@ public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
     private List<TrackedObjectBahviour> trackedObjectList;
     private BallBehaviour ball;
 
-    private int direction = 0; //simulating direction
+    [SerializeField] private int direction = 0; //simulating direction
 
     private void Start()
     {
         direction = 0;
-        CreateMatch(MatchData.SP.GetFrames[0]);
     }
 
     /// <summary>
@@ -99,7 +97,6 @@ public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
         ball.SetValues(frameData.GetBallData);
         for (int i = 0; i < trackedObjectList.Count; i++)
         {
-
             trackedObjectList[i].SetPosition(frameData.GetTrackedObjects[i]);
         }
     }

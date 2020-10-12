@@ -4,150 +4,108 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class MatchData : SingeltonMonobehaviour<MatchData>
+public class MatchData : SingletonMonoBehaviour<MatchData>
 {
     private string filePath = "Assets/Resources/match_data.dat";
-    //private List<Frame> frames; //500 frames need to be used
 
-    [SerializeField] private Frame[] frames;
+    private List<Dictionary<int, Frame>> subDict;
 
-    private Stack<Frame> previousFrames;
-    // private List<Frame> frames;
-    private int bufferSize; //the amount of frames that are bufferd on eich side
-    private bool isLoadingFrames;
+    private int amountOfSubDicts; //the amount of frames that are bufferd on each side
+
     [SerializeField] private int currentFrameIndex;
+    [SerializeField] private int firstFrame;
+    [SerializeField] private int lastFrame;
 
-    [SerializeField] private int lastCheckedLine;
-
+    private Frame lastGivenFrame;
     StreamReader streamReader;
 
     private void Start()
     {
-        lastCheckedLine = 0;
-        bufferSize = 50;
-        isLoadingFrames = false;
+        amountOfSubDicts = 10;
         currentFrameIndex = 0;
+        firstFrame = 0;
+        lastFrame = int.MaxValue;
 
         streamReader = new StreamReader(filePath);
-        //load data in tracked objects
-        // frames = new List<Frame>();
-        frames = new Frame[bufferSize * 2];
-        previousFrames = new Stack<Frame>();
-        StartCoroutine(LoadFirstFrames(bufferSize * 2));
+
+        subDict = new List<Dictionary<int, Frame>>();
+        for (int i = 0; i < amountOfSubDicts; i++)
+        {
+            subDict.Add(new Dictionary<int, Frame>());
+        }
+
+        StartCoroutine(LoadAllFrames());
     }
 
-    /// <summary>
-    /// Used to load the first 500 frames
-    /// </summary>
-    private IEnumerator LoadFirstFrames(int amountOfFrames)
+    private IEnumerator LoadAllFrames()
     {
-        isLoadingFrames = true;
-        // StreamReader str = new StreamReader(filePath);
         int lineIndex = 0;
-
-        while (!streamReader.EndOfStream && lineIndex < amountOfFrames)
+        Frame tempFrame = null;
+        while (!streamReader.EndOfStream)
         {
             string lineOfData = streamReader.ReadLine();
-            frames[lineIndex] = new Frame(lineOfData);
-            lastCheckedLine++;
+
+            tempFrame = new Frame(lineOfData);
+
+            GetDictionairy(tempFrame.GetFrameCount).Add(tempFrame.GetFrameCount, tempFrame);
+
+            if (firstFrame == 0)
+            {
+                lastGivenFrame = tempFrame;
+                firstFrame = tempFrame.GetFrameCount;
+                currentFrameIndex = firstFrame;
+                MatchVisualizer.SP.CreateMatch(GetCurrentFrame());
+            }
+
             lineIndex++;
-            if (lineIndex % 25 == 0)
+            if (lineIndex % 50 == 0)
             {
                 yield return 0;
             }
         }
 
-        // str.Close();
-        isLoadingFrames = false;
+        lastFrame = tempFrame.GetFrameCount;
+        if (lastFrame == 0)
+        {
+            Debug.LogWarning("Last frame not found");
+        }
+
+        GameManager.SP.GetSimulationController.CreateSlider(firstFrame,lastFrame, currentFrameIndex);
+        streamReader.Close();
         yield return 0;
     }
 
-    private IEnumerator LoadFrames(int startIndex, int direction, int previousFrameIndex, int amountOfFrames)
+
+
+    private Dictionary<int, Frame> GetDictionairy(int index)
     {
-        isLoadingFrames = true;
-        //StreamReader str = new StreamReader(filePath);
-        int lineChecks = 0;
-
-        int index = startIndex;
-
-        while (!streamReader.EndOfStream && lineChecks < amountOfFrames)
-        {
-            string lineOfData = streamReader.ReadLine();
-            Frame tempFrame = new Frame(lineOfData);
-
-            Debug.Log("Check: " + tempFrame.GetFrameCount + "/" + (previousFrameIndex + direction));
-            //if (tempFrame.GetFrameCount == (previousFrameIndex + direction)) //search for the right line of data
-            //{
-            Debug.Log("Overwrite at: " + index + " /  " + (previousFrameIndex + direction));
-            frames[index] = tempFrame;
-            index = GetNextIndex(index, direction);
-            previousFrameIndex = tempFrame.GetFrameCount;
-            // }
-
-            lineChecks++;
-            if (lineChecks % 50 == 0)
-            {
-                yield return 0;
-            }
-
-        }
-
-        isLoadingFrames = false;
-        yield return 0;
+        //Get the last number of the index
+        int returnIndex = index % amountOfSubDicts;
+        return subDict[returnIndex];
     }
 
-    private bool IsFrameInOrder(Frame current, Frame next, int direction)
+    public Frame GetCurrentFrame(int direction = 0)
     {
-        //Debug.Log("checked: " + current.GetFrameCount + " to " + next.GetFrameCount +" Direction: " + direction);
-        return ((current.GetFrameCount + direction) == next.GetFrameCount);
-    }
-
-    private int GetNextIndex(int currentIndex, int direction)
-    {
-        if (currentIndex + direction < 0)
+        currentFrameIndex = Mathf.Clamp(currentFrameIndex, firstFrame, lastFrame);
+        currentFrameIndex += direction;
+        GameManager.SP.GetSimulationController.UpdateSlider(currentFrameIndex);
+        if (GetDictionairy(currentFrameIndex).TryGetValue(currentFrameIndex, out Frame fr))
         {
-            return frames.Length - 1;
-        }
-        else if (currentIndex + direction >= frames.Length)
-        {
-            return 0;
+            lastGivenFrame = fr;
+            return fr;
         }
         else
         {
-            return currentIndex + direction;
-        }
-    }
-
-    public Frame GetCurrentFrame(int direction)
-    {
-        currentFrameIndex = Mathf.Clamp(currentFrameIndex, 0, frames.Length - 1);
-
-        //Check if the next index is good
-        if (!IsFrameInOrder(frames[currentFrameIndex], frames[GetNextIndex(currentFrameIndex, direction)], direction))
-        {
-            Debug.Log("Not in order");
-            // Debug.Break();
-
-            if (!isLoadingFrames)
-            {
-                StopAllCoroutines();
-                StartCoroutine(LoadFrames(GetNextIndex(currentFrameIndex, direction), direction, frames[currentFrameIndex].GetFrameCount, bufferSize));
-            }
+            Debug.Log("Frame does not exist " + currentFrameIndex + " start buffering");
+            return lastGivenFrame;
         }
 
-
-        Frame toReturn = frames[currentFrameIndex];
-        previousFrames.Push(toReturn);
-        currentFrameIndex = GetNextIndex(currentFrameIndex, direction);
-        return toReturn;
     }
-
-    public Frame[] GetFrames
-    {
-        get { return frames; }
-    }
-
-    public Frame GetFrame => frames[currentFrameIndex];
 
     public int GetIndex => currentFrameIndex;
+
+    public void SetIndex(int newIndex)
+    {
+        currentFrameIndex = newIndex;
+    }
 }

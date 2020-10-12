@@ -13,12 +13,17 @@ public class BallBehaviour : MonoBehaviour, IHighlightObject
         return desc;
     }
 
+    public void SetHighLight()
+    {
+
+    }
+
     public void SetValues(BallData data)
     {
         transform.position = CalculateData(data);
     }
 
-    private Vector3 CalculateData( BallData data)
+    private Vector3 CalculateData(BallData data)
     {
         return new Vector3(data.Position.x, data.Position.z, data.Position.y);
     }

@@ -12,14 +12,16 @@ public class TrackedObjectData
     [SerializeField] private int playerNumber;
     [SerializeField] private Vector2 position;
     [SerializeField] private float speed;
+    private string firstDown;
 
-    public TrackedObjectData(string team, string trackingID, int playerNumber, Vector2 position, float speed)
+    public TrackedObjectData(string team, string trackingID, int playerNumber, Vector2 position, float speed, string firstDown = "")
     {
         this.teamName = team;
         this.trackingID = trackingID;
         this.playerNumber = playerNumber;
         this.position = position;
         this.speed = speed;
+        this.firstDown = firstDown;
     }
 
     public TrackedObjectData(string objectData)
@@ -32,6 +34,14 @@ public class TrackedObjectData
         position.x = float.Parse(splitData[3]);
         position.y = float.Parse(splitData[4]);
         speed = float.Parse(splitData[5]);
+        try
+        {
+            firstDown = splitData[6];
+        }
+        catch (Exception)
+        {
+            throw;
+        }
     }
 
     public string TeamName => teamName;

@@ -2,7 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public interface IHighlightObject 
+public interface IHighlightObject
 {
+    void SetHighLight( );
     string Description();
 }

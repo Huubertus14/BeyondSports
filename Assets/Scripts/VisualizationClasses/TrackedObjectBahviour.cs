@@ -7,9 +7,6 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
 {
     private Renderer objectRenderer;
 
-    public delegate void OnTrackedObjectClicked(TrackedObjectBahviour clickedPlayer);
-    public static OnTrackedObjectClicked trackedObjectDelegate;
-
     private string team;
     private string trackingID;
     private int playerNumber;
@@ -30,11 +27,10 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
         transform.position = CalculatePosition(data);
 
         playerNumberText.text = playerNumber.ToString();
-
         SetPlayerColor(team);
     }
 
-    private void SetPlayerColor(string team) //not good
+    private void SetPlayerColor(string team) //Can be cleaner
     {
         //Get Color from team number
         switch (team)
@@ -72,6 +68,12 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
         desc += "\n Speed: " + objectData.Speed;
         return desc;
     }
+
+    public void SetHighLight()
+    {
+        GameManager.SP.GetCameraController.SetLookTarget(gameObject);
+    }
+
 
     public string TrackID => trackingID;
 }
