@@ -4,7 +4,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class MatchVisualizer : MonoBehaviour
+public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
 {
 
     [Header("Prefabs")]
@@ -17,15 +17,16 @@ public class MatchVisualizer : MonoBehaviour
 
     private int beginFrame = 0;
     private int simulateIndex;
-    private bool simulating = false;
+
+    private int direction = 0; //simulating direction
 
     private void Start()
     {
-        simulating = false;
+        direction = 0;
         //Create match for first frame
-        beginFrame = MatchData.SP.frames[0].GetFrameCount;
+        beginFrame = MatchData.SP.GetFrames[0].GetFrameCount;
         simulateIndex = 0;
-        CreateMatch(MatchData.SP.frames[0]);
+        CreateMatch(MatchData.SP.GetFrames[0]);
     }
 
     public void CreateMatch(Frame frameData)
@@ -34,8 +35,6 @@ public class MatchVisualizer : MonoBehaviour
 
         ball = Instantiate(ballPrefab, transform.position, Quaternion.identity, transform);
         ball.SetValues(frameData.GetBallData);
-
-        Debug.Log("create " + frameData.GetTrackedObjects.Length + " players");
 
         for (int i = 0; i < frameData.GetTrackedObjects.Length; i++)
         {
@@ -51,33 +50,42 @@ public class MatchVisualizer : MonoBehaviour
         }
     }
 
-    public void StartSimulating()
+    public void SetDirection(int value)
     {
-        simulating = true;
+        direction = value;
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            simulating = !simulating;
-        }
+        Controlls();
 
-        if (simulating)
+        if (direction != 0)
         {
             try
             {
-                if (simulateIndex < MatchData.SP.frames.Count)
-                {
-                    UpdateFrame(MatchData.SP.frames[simulateIndex]);
-                    simulateIndex++;
-                }
+                UpdateFrame(MatchData.SP.GetCurrentFrame(direction));
             }
             catch (System.Exception e)
             {
                 Debug.LogError(e);
                 throw;
             }
+        }
+    }
+
+    private void Controlls()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            direction = -1;
+        }
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            direction = 0;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            direction = 1;
         }
     }
 
