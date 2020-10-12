@@ -15,20 +15,18 @@ public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
     private List<TrackedObjectBahviour> trackedObjectList;
     private BallBehaviour ball;
 
-    private int beginFrame = 0;
-    private int simulateIndex;
-
     private int direction = 0; //simulating direction
 
     private void Start()
     {
         direction = 0;
-        //Create match for first frame
-        beginFrame = MatchData.SP.GetFrames[0].GetFrameCount;
-        simulateIndex = 0;
         CreateMatch(MatchData.SP.GetFrames[0]);
     }
 
+    /// <summary>
+    /// This method is called to create the match and al its players
+    /// </summary>
+    /// <param the first frame of the match="frameData"></param>
     public void CreateMatch(Frame frameData)
     {
         trackedObjectList = new List<TrackedObjectBahviour>();
@@ -50,6 +48,13 @@ public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
         }
     }
 
+    /// <summary>
+    /// Called to set the direction/speed of the simulation
+    /// 0 = pause
+    /// -1 = backwards
+    /// 1 = forwards
+    /// </summary>
+    /// <param The desired directoin="value"></param>
     public void SetDirection(int value)
     {
         direction = value;
@@ -94,7 +99,10 @@ public class MatchVisualizer : SingeltonMonobehaviour<MatchVisualizer>
         ball.SetValues(frameData.GetBallData);
         for (int i = 0; i < trackedObjectList.Count; i++)
         {
+
             trackedObjectList[i].SetPosition(frameData.GetTrackedObjects[i]);
         }
     }
+
+    public BallBehaviour GetBall => ball;
 }

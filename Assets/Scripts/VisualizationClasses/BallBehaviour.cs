@@ -2,9 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BallBehaviour : MonoBehaviour
+public class BallBehaviour : MonoBehaviour, IHighlightObject
 {
 
+    BallData objectData;
+    public string Description()
+    {
+        string desc = "position: " + objectData.Position;
+        desc += "\n Speed: " + objectData.Speed;
+        return desc;
+    }
 
     public void SetValues(BallData data)
     {

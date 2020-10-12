@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 
-public class TrackedObjectBahviour : MonoBehaviour
+public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
 {
     private Renderer objectRenderer;
+
+    public delegate void OnTrackedObjectClicked(TrackedObjectBahviour clickedPlayer);
+    public static OnTrackedObjectClicked trackedObjectDelegate;
 
     private string team;
     private string trackingID;
@@ -60,4 +63,15 @@ public class TrackedObjectBahviour : MonoBehaviour
     {
         return new Vector3(data.Position.x, 2, data.Position.y);
     }
+
+    public string Description()
+    {
+        string desc = "Team: " + objectData.TeamName;
+        desc += "\n Number: " + objectData.PlayerNumber;
+        desc += "\n Position: " + objectData.Position;
+        desc += "\n Speed: " + objectData.Speed;
+        return desc;
+    }
+
+    public string TrackID => trackingID;
 }

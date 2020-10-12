@@ -15,7 +15,7 @@ public class SimulationController : MonoBehaviour
 
     private void Update()
     {
-        frameCounter.text = MatchData.SP.GetIndex.ToString();
+        frameCounter.text = "FrameCounter: " + MatchData.SP.GetFrame.GetFrameCount.ToString();
     }
 
 }

@@ -10,22 +10,29 @@ public class MatchData : SingeltonMonobehaviour<MatchData>
     //private List<Frame> frames; //500 frames need to be used
 
     [SerializeField] private Frame[] frames;
-   // private List<Frame> frames;
+
+    private Stack<Frame> previousFrames;
+    // private List<Frame> frames;
     private int bufferSize; //the amount of frames that are bufferd on eich side
-
     private bool isLoadingFrames;
-
     [SerializeField] private int currentFrameIndex;
+
+    [SerializeField] private int lastCheckedLine;
+
+    StreamReader streamReader;
 
     private void Start()
     {
+        lastCheckedLine = 0;
         bufferSize = 50;
         isLoadingFrames = false;
         currentFrameIndex = 0;
 
+        streamReader = new StreamReader(filePath);
         //load data in tracked objects
         // frames = new List<Frame>();
         frames = new Frame[bufferSize * 2];
+        previousFrames = new Stack<Frame>();
         StartCoroutine(LoadFirstFrames(bufferSize * 2));
     }
 
@@ -35,14 +42,14 @@ public class MatchData : SingeltonMonobehaviour<MatchData>
     private IEnumerator LoadFirstFrames(int amountOfFrames)
     {
         isLoadingFrames = true;
-        StreamReader str = new StreamReader(filePath);
+        // StreamReader str = new StreamReader(filePath);
         int lineIndex = 0;
 
-        while (!str.EndOfStream && lineIndex < amountOfFrames)
+        while (!streamReader.EndOfStream && lineIndex < amountOfFrames)
         {
-            string lineOfData = str.ReadLine();
+            string lineOfData = streamReader.ReadLine();
             frames[lineIndex] = new Frame(lineOfData);
-
+            lastCheckedLine++;
             lineIndex++;
             if (lineIndex % 25 == 0)
             {
@@ -50,30 +57,32 @@ public class MatchData : SingeltonMonobehaviour<MatchData>
             }
         }
 
-        str.Close();
+        // str.Close();
         isLoadingFrames = false;
         yield return 0;
     }
 
     private IEnumerator LoadFrames(int startIndex, int direction, int previousFrameIndex, int amountOfFrames)
     {
-        StreamReader str = new StreamReader(filePath);
+        isLoadingFrames = true;
+        //StreamReader str = new StreamReader(filePath);
         int lineChecks = 0;
 
         int index = startIndex;
 
-        while (!str.EndOfStream && lineChecks < amountOfFrames  * 3)
+        while (!streamReader.EndOfStream && lineChecks < amountOfFrames)
         {
-            string lineOfData = str.ReadLine();
+            string lineOfData = streamReader.ReadLine();
             Frame tempFrame = new Frame(lineOfData);
 
             Debug.Log("Check: " + tempFrame.GetFrameCount + "/" + (previousFrameIndex + direction));
-            if (tempFrame.GetFrameCount == (previousFrameIndex + direction)) //search for the right line of data
-            {
-                Debug.Log("Overwrite at: " + index + " /  " + (previousFrameIndex + direction));
-                frames[index] = tempFrame;
-                index = GetNextIndex(index, direction);
-            }
+            //if (tempFrame.GetFrameCount == (previousFrameIndex + direction)) //search for the right line of data
+            //{
+            Debug.Log("Overwrite at: " + index + " /  " + (previousFrameIndex + direction));
+            frames[index] = tempFrame;
+            index = GetNextIndex(index, direction);
+            previousFrameIndex = tempFrame.GetFrameCount;
+            // }
 
             lineChecks++;
             if (lineChecks % 50 == 0)
@@ -83,6 +92,7 @@ public class MatchData : SingeltonMonobehaviour<MatchData>
 
         }
 
+        isLoadingFrames = false;
         yield return 0;
     }
 
@@ -117,11 +127,17 @@ public class MatchData : SingeltonMonobehaviour<MatchData>
         {
             Debug.Log("Not in order");
             // Debug.Break();
-            StopAllCoroutines();
-            StartCoroutine(LoadFrames(GetNextIndex(currentFrameIndex, direction), direction, frames[currentFrameIndex].GetFrameCount, bufferSize));
+
+            if (!isLoadingFrames)
+            {
+                StopAllCoroutines();
+                StartCoroutine(LoadFrames(GetNextIndex(currentFrameIndex, direction), direction, frames[currentFrameIndex].GetFrameCount, bufferSize));
+            }
         }
 
+
         Frame toReturn = frames[currentFrameIndex];
+        previousFrames.Push(toReturn);
         currentFrameIndex = GetNextIndex(currentFrameIndex, direction);
         return toReturn;
     }
@@ -130,6 +146,8 @@ public class MatchData : SingeltonMonobehaviour<MatchData>
     {
         get { return frames; }
     }
+
+    public Frame GetFrame => frames[currentFrameIndex];
 
     public int GetIndex => currentFrameIndex;
 }
