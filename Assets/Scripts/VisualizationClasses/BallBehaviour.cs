@@ -14,7 +14,7 @@ public class BallBehaviour : MonoBehaviour, IHighlightObject
 
     public void SetHighLight()
     {
-
+        GameManager.SP.GetCameraController.SetLookTarget(gameObject);
     }
 
     public void SetValues(BallData data)
