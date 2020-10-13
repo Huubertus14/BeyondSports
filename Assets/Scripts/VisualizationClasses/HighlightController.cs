@@ -19,10 +19,9 @@ public class HighlightController : MonoBehaviour
                 IHighlightObject highlight = hit.transform.gameObject.GetComponent<IHighlightObject>();
                 if (highlight != null)
                 {
-                    //Set panel info
-                    infoController.TogglePanel(true);
-                    infoController.SetData(highlight.Description());
-                    highlight.SetHighLight();
+                    infoController.TogglePanel(true);                   //enable panel
+                    infoController.SetData(highlight.Description());    //set right data on the panel
+                    highlight.SetHighLight();                           //set the given object as a highlight object
                 }
                 else
                 {

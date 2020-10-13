@@ -5,7 +5,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     private GameObject target;
-    [SerializeField]private bool freeRoam;
+    [SerializeField] private bool freeRoam;
     private Vector3 offSet;
     private Transform orginTransform;
 
@@ -30,12 +30,15 @@ public class CameraController : MonoBehaviour
 
     private float frameCounter = 20;
 
+    private float horizontalSpeed = 15f;
+    private float verticalSpeed = 5f;
+
     private void Awake()
     {
         orginTransform = transform;
         freeRoam = false;
         target = null;
-        offSet = new Vector3(0,600,-800);
+        offSet = new Vector3(0, 600, -800);
     }
 
     public void ResetTransform()
@@ -61,6 +64,7 @@ public class CameraController : MonoBehaviour
     {
         target = null;
         freeRoam = true;
+
     }
 
     private void LateUpdate()
@@ -80,16 +84,36 @@ public class CameraController : MonoBehaviour
     private void FreeRoamControl()
     {
         CameraMovement();
-        CameraMouseRotation();
+        if (Input.GetMouseButton(1))
+        {
+            CameraMouseRotation();
+        }
     }
 
     private void CameraMovement()
     {
-        Vector3 newPos = new Vector3(Input.GetAxis("Horizontal"), transform.position.y, transform.position.z);
+        Vector3 newPos = transform.right * Input.GetAxis("Horizontal") * horizontalSpeed;
+
+        newPos += transform.forward * Input.GetAxis("Vertical") * horizontalSpeed;
+
+        if (Input.GetKey(KeyCode.Space))
+        {
+            //move Up
+            newPos += Vector3.up * verticalSpeed;
+        }
+        else if (Input.GetKey(KeyCode.LeftShift))
+        {
+            newPos -= Vector3.up * verticalSpeed;
+        }
+
+        transform.position += newPos;
     }
 
     private void CameraMouseRotation()
     {
+        rotArrayX.Clear();
+        rotArrayY.Clear();
+
         rotAverageY = 0f;
         rotAverageX = 0f;
 

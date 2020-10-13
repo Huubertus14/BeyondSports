@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class BallBehaviour : MonoBehaviour, IHighlightObject
 {
-
     BallData objectData;
     public string Description()
     {

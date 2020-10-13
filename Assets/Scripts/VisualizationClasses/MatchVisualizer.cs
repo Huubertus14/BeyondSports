@@ -4,22 +4,14 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Playables;
 
-public class MatchVisualizer : SingletonMonoBehaviour<MatchVisualizer>
+public class MatchVisualizer : MonoBehaviour
 {
     [Header("Prefabs")]
     [SerializeField] private TrackedObjectBahviour trackedObjectPrefab;
     [SerializeField] private BallBehaviour ballPrefab;
 
-    //Cached refs
     private List<TrackedObjectBahviour> trackedObjectList;
-    private BallBehaviour ball;
-
-    [SerializeField] private int direction = 0; //simulating direction
-
-    private void Start()
-    {
-        direction = 0;
-    }
+    private int direction = 0; //simulating direction
 
     /// <summary>
     /// This method is called to create the match and al its players
@@ -29,8 +21,8 @@ public class MatchVisualizer : SingletonMonoBehaviour<MatchVisualizer>
     {
         trackedObjectList = new List<TrackedObjectBahviour>();
 
-        ball = Instantiate(ballPrefab, transform.position, Quaternion.identity, transform);
-        ball.SetValues(frameData.GetBallData);
+        GetBall = Instantiate(ballPrefab, transform.position, Quaternion.identity, transform);
+        GetBall.SetValues(frameData.GetBallData);
 
         for (int i = 0; i < frameData.GetTrackedObjects.Length; i++)
         {
@@ -76,30 +68,37 @@ public class MatchVisualizer : SingletonMonoBehaviour<MatchVisualizer>
         }
     }
 
+    /// <summary>
+    /// Controlls to play the simulation
+    /// </summary>
     private void Controlls()
     {
-        if (Input.GetKeyDown(KeyCode.Q))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             direction = -1;
         }
-        if (Input.GetKeyDown(KeyCode.W))
+        if (Input.GetKeyDown(KeyCode.O))
         {
             direction = 0;
         }
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             direction = 1;
         }
     }
 
+    /// <summary>
+    /// Display the next frame
+    /// </summary>
+    /// <param next frame="frameData"></param>
     public void UpdateFrame(Frame frameData)
     {
-        ball.SetValues(frameData.GetBallData);
+        GetBall.SetValues(frameData.GetBallData);
         for (int i = 0; i < trackedObjectList.Count; i++)
         {
             trackedObjectList[i].UpdateObject(frameData.GetTrackedObjects[i]);
         }
     }
 
-    public BallBehaviour GetBall => ball;
+    public BallBehaviour GetBall { get; private set; }
 }

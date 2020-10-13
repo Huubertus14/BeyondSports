@@ -38,7 +38,7 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
                 objectRenderer.material.color = Color.black;
                 break;
             case -1:
-                gameObject.SetActive(false);
+                DisableTrackedObject();
                 break;
             default:
                 objectRenderer.material.color = Color.white;
@@ -48,7 +48,7 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
 
     public void UpdateObject(TrackedObjectData data)
     {
-        gameObject.SetActive(true);
+        objectRenderer.enabled = true;
         objectData = data;
         team = data.TeamName;
         trackingID = data.TrackingId;
@@ -57,6 +57,17 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
 
         playerNumberText.text = playerNumber.ToString();
         SetPlayerColor(int.Parse(team));
+
+        if (data.PlayerNumber == -1)
+        {
+            DisableTrackedObject();
+        } //remove not used objects
+    }
+
+    private void DisableTrackedObject()
+    {
+        objectRenderer.enabled = false;
+        playerNumberText.text = "";
     }
 
     private Vector3 CalculatePosition(TrackedObjectData data)

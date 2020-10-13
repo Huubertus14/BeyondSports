@@ -32,6 +32,10 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
         StartCoroutine(LoadAllFrames());
     }
 
+    /// <summary>
+    /// Start loading all frames and create the match after the first few frames
+    /// </summary>
+    /// <returns></returns>
     private IEnumerator LoadAllFrames()
     {
         StreamReader streamReader = new StreamReader(filePath);
@@ -50,7 +54,7 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
                 lastGivenFrame = tempFrame;
                 firstFrame = tempFrame.GetFrameCount;
                 GetIndex = firstFrame;
-                MatchVisualizer.SP.CreateMatch(GetCurrentFrame());
+                GameManager.SP.GetMatchVisualizer.CreateMatch(GetCurrentFrame());
             }
 
             lineIndex++;
@@ -71,6 +75,11 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
         yield return 0;
     }
 
+    /// <summary>
+    /// Call this to get the right dictionairy for the given frame
+    /// </summary>
+    /// <param FrameCount="index"></param>
+    /// <returns>The Dictionairy where the Frame is in</returns>
     private Dictionary<int, Frame> GetDictionairy(int index)
     {
         //Get the last number of the index
@@ -78,6 +87,14 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
         return subDict[returnIndex];
     }
 
+    /// <summary>
+    /// Get the current frame and increase the index in the direction
+    /// 0 = still
+    /// 1  = forward
+    /// -1 = backwards
+    /// </summary>
+    /// <param name="direction"></param>
+    /// <returns>The frame of the current index</returns>
     public Frame GetCurrentFrame(int direction = 0)
     {
         GetIndex = Mathf.Clamp(GetIndex, firstFrame, lastFrame);
@@ -90,14 +107,21 @@ public class MatchData : SingletonMonoBehaviour<MatchData>
         }
         else
         {
-            Debug.Log("Frame does not exist " + GetIndex + " start buffering");
+            Debug.Log("Frame does not exist " + GetIndex);
             return lastGivenFrame;
         }
 
     }
 
+    /// <summary>
+    /// Get the current frame Index
+    /// </summary>
     public int GetIndex { get; private set; }
 
+    /// <summary>
+    /// Set the current frame index, used to skip ahead and back in the simulation
+    /// </summary>
+    /// <param the new Index="newIndex"></param>
     public void SetIndex(int newIndex)
     {
         GetIndex = newIndex;

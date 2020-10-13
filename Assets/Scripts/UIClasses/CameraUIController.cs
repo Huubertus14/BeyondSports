@@ -31,7 +31,7 @@ public class CameraUIController : MonoBehaviour
 
     public void FocusOnBall()
     {
-        cameraController.SetLookTarget(MatchVisualizer.SP.GetBall.gameObject);
+        cameraController.SetLookTarget(GameManager.SP.GetMatchVisualizer.GetBall.gameObject);
     }
 
     

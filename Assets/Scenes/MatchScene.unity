@@ -1538,7 +1538,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -830, y: 0}
-  m_SizeDelta: {x: 252, y: 194}
+  m_SizeDelta: {x: 163, y: 249}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1141087948
 MonoBehaviour:
@@ -1615,7 +1615,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: c8eb67dcce673dc419f1e5c7700aab7f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ef785eea4c1d6f6479163815505205d3, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2003,7 +2003,7 @@ Canvas:
   m_Enabled: 1
   serializedVersion: 3
   m_RenderMode: 1
-  m_Camera: {fileID: 0}
+  m_Camera: {fileID: 1792547422}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
@@ -2409,6 +2409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b975e23926a18db408c5f8f2494ce38f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  matchVisualizer: {fileID: 2101388429}
   cameraController: {fileID: 1792547424}
   simulationController: {fileID: 1636078584}
 --- !u!1 &1636078582
@@ -2650,8 +2651,8 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.3
-  far clip plane: 5000
-  field of view: 71.13163
+  far clip plane: 10000
+  field of view: 70
   orthographic: 0
   orthographic size: 5
   m_Depth: -1
@@ -2964,4 +2965,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   trackedObjectPrefab: {fileID: 6643249522357813620, guid: 559cf1648f3d4e54c803b9ff9b808e9b, type: 3}
   ballPrefab: {fileID: 5286072970916714292, guid: 44784c2a69a85d14cbda1e715e822fc8, type: 3}
-  direction: 0

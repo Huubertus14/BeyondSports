@@ -41,7 +41,7 @@ public class SimulationController : MonoBehaviour
 
     public void SetSimulationSpeed(int direction)
     {
-        MatchVisualizer.SP.SetDirection(direction);
+        GameManager.SP.GetMatchVisualizer.SetDirection(direction);
     }
 
     private void Update()
