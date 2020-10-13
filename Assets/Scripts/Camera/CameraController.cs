@@ -64,7 +64,6 @@ public class CameraController : MonoBehaviour
     {
         target = null;
         freeRoam = true;
-
     }
 
     private void LateUpdate()

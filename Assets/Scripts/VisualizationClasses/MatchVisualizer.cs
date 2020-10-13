@@ -73,7 +73,7 @@ public class MatchVisualizer : MonoBehaviour
     /// </summary>
     private void Controlls()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.I))
         {
             direction = -1;
         }
@@ -81,7 +81,7 @@ public class MatchVisualizer : MonoBehaviour
         {
             direction = 0;
         }
-        if (Input.GetKeyDown(KeyCode.I))
+        if (Input.GetKeyDown(KeyCode.P))
         {
             direction = 1;
         }
