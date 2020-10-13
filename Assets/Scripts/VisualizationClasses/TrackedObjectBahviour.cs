@@ -20,29 +20,25 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
     {
         objectRenderer = GetComponent<Renderer>();
 
-        objectData = data;
-        team = data.TeamName;
-        trackingID = data.TrackingId;
-        playerNumber = data.PlayerNumber;
-        transform.position = CalculatePosition(data);
-
-        playerNumberText.text = playerNumber.ToString();
-        SetPlayerColor(team);
+        UpdateObject(data);
     }
 
-    private void SetPlayerColor(string team) //Can be cleaner
+    private void SetPlayerColor(int team) //Can be cleaner
     {
         //Get Color from team number
         switch (team)
         {
-            case "0":
+            case 0:
                 objectRenderer.material.color = Color.red;
                 break;
-            case "1":
+            case 1:
                 objectRenderer.material.color = Color.blue;
                 break;
-            case "2":
+            case 2:
                 objectRenderer.material.color = Color.black;
+                break;
+            case -1:
+                gameObject.SetActive(false);
                 break;
             default:
                 objectRenderer.material.color = Color.white;
@@ -50,9 +46,17 @@ public class TrackedObjectBahviour : MonoBehaviour, IHighlightObject
         }
     }
 
-    public void SetPosition(TrackedObjectData data)
+    public void UpdateObject(TrackedObjectData data)
     {
+        gameObject.SetActive(true);
+        objectData = data;
+        team = data.TeamName;
+        trackingID = data.TrackingId;
+        playerNumber = data.PlayerNumber;
         transform.position = CalculatePosition(data);
+
+        playerNumberText.text = playerNumber.ToString();
+        SetPlayerColor(int.Parse(team));
     }
 
     private Vector3 CalculatePosition(TrackedObjectData data)

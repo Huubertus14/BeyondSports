@@ -97,7 +97,7 @@ public class MatchVisualizer : SingletonMonoBehaviour<MatchVisualizer>
         ball.SetValues(frameData.GetBallData);
         for (int i = 0; i < trackedObjectList.Count; i++)
         {
-            trackedObjectList[i].SetPosition(frameData.GetTrackedObjects[i]);
+            trackedObjectList[i].UpdateObject(frameData.GetTrackedObjects[i]);
         }
     }
 
