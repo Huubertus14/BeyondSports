@@ -9,11 +9,11 @@ public class TrackedObjectData
 {
     private object[] trackedObjectData;
 
-    [SerializeField] private string teamName;
-    [SerializeField] private string trackingID;
-    [SerializeField] private int playerNumber;
-    [SerializeField] private Vector2 position;
-    [SerializeField] private float speed;
+    private string teamName;
+    private string trackingID;
+    private int playerNumber;
+    private Vector2 position;
+    private float speed;
     private string firstDown;
 
     public TrackedObjectData(string team, string trackingID, int playerNumber, Vector2 position, float speed, string firstDown = "")
@@ -37,13 +37,24 @@ public class TrackedObjectData
             trackedObjectData[i] = splitData[i];
         }
 
-        teamName = splitData[0];
-        trackingID = splitData[1];
-        playerNumber = int.Parse(splitData[2]);
-        position.x = float.Parse(splitData[3]);
-        position.y = float.Parse(splitData[4]);
-        speed = float.Parse(splitData[5]);
-        
+        teamName = trackedObjectData[0].ToString();
+        trackingID = trackedObjectData[1].ToString();
+        playerNumber = (int)trackedObjectData[2];
+        position.x = (float)trackedObjectData[3];
+        position.y = (float)trackedObjectData[4];
+        speed = (float)trackedObjectData[5];
+
+        //Add all optional values here
+        try
+        {
+            firstDown = trackedObjectData[6].ToString();
+        }
+        catch (Exception)
+        {
+
+            throw;
+        }
+
     }
 
     public string TeamName => teamName;
@@ -51,4 +62,5 @@ public class TrackedObjectData
     public int PlayerNumber => playerNumber;
     public Vector2 Position => position;
     public float Speed => speed;
+    public string FirstDown => firstDown;
 }
