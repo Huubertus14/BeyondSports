@@ -13,28 +13,21 @@ public class TrackedObjectData
     [SerializeField] private int playerNumber;
     [SerializeField] private Vector2 position;
     [SerializeField] private float speed;
-    private string firstDown;
+    private object[] otherInfo;
 
-    public TrackedObjectData(string team, string trackingID, int playerNumber, Vector2 position, float speed, string firstDown = "")
+    public TrackedObjectData(string team, string trackingID, int playerNumber, Vector2 position, float speed, object[] otherInfo = null)
     {
         this.teamName = team;
         this.trackingID = trackingID;
         this.playerNumber = playerNumber;
         this.position = position;
         this.speed = speed;
-        this.firstDown = firstDown;
+        this.otherInfo = otherInfo;
     }
 
     public TrackedObjectData(string objectData)
     {
-        string[] splitData = objectData.Split(',');
-
-        trackedObjectData = new object[splitData.Length];
-
-        for (int i = 0; i < trackedObjectData.Length; i++)
-        {
-            trackedObjectData[i] = splitData[i];
-        }
+        trackedObjectData = objectData.Split(',');
 
         teamName = trackedObjectData[0].ToString();
         trackingID = trackedObjectData[1].ToString();
@@ -43,16 +36,15 @@ public class TrackedObjectData
         position.y = float.Parse(trackedObjectData[4].ToString());
         speed = float.Parse(trackedObjectData[5].ToString());
 
+        //find not used indexes
+        int notUsedIndexes = trackedObjectData.Length - 6; //there are 6 basic values
+        otherInfo = new object[notUsedIndexes];
+
         //Add all optional values here
-        try
+        for (int i = 0; i < otherInfo.Length; i++)
         {
-            firstDown = trackedObjectData[6].ToString();
+            otherInfo[i] = trackedObjectData[6 + i];
         }
-        catch (Exception e)
-        {
-
-        }
-
     }
 
     public string TeamName => teamName;
@@ -60,5 +52,5 @@ public class TrackedObjectData
     public int PlayerNumber => playerNumber;
     public Vector2 Position => position;
     public float Speed => speed;
-    public string FirstDown => firstDown;
+    public object GetExtraInfo => otherInfo;
 }
